@@ -1,9 +1,35 @@
-import React from "react";
+import React, { type FormEvent, type ChangeEvent, useState } from "react";
+import axios from "axios";
 import { MdTravelExplore } from "react-icons/md";
+import { toast } from "react-toastify";
 import "./Signin.css";
-
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate()
+  const loginuser = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      if (!email) {
+        toast.error("Email Does not Match");
+        return;
+      }
+      if (!password) {
+        toast.error("Password Does not match");
+        return;
+      }
+      await axios.post("http://localhost:5000/auth/login", { email, password });
+      toast.success("Account created");
+      navigate('/')
+    } catch (err:any) {
+      if (err.response?.data?.error)
+        return toast.error(
+          err.response?.data?.error
+        );
+    }
+  };
   return (
     <>
       <div
@@ -21,16 +47,22 @@ const Login: React.FC = () => {
         </div>
 
         {/* Form */}
-        <form className="p-4 flex flex-col gap-4">
+        <form className="p-4 flex flex-col gap-4" onSubmit={loginuser}>
           <input
             type="email"
             className="rounded-md p-2 placeholder:text-cyan-700 outline-none bg-white/30 text-white"
             placeholder="username@gmail.com"
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
           />
           <input
             type="password"
             className="rounded-md p-2 placeholder:text-cyan-700 outline-none bg-white/30 text-white"
             placeholder="Password"
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
           />
           <p className="text-orange-500 cursor-pointer text-right">
             Forgot Password?

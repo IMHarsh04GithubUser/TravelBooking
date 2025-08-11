@@ -3,29 +3,45 @@ import axios from "axios";
 import { MdTravelExplore } from "react-icons/md";
 import "./Signin.css";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
 
   const registeruser = async (e: FormEvent) => {
     e.preventDefault();
     try {
       if (!email) {
-        toast.error("Email Does not Match");
+        toast.error("Enter your Email");
+        return;
+      } else if (!password) {
+        toast.error("Enter the Password");
         return;
       }
-      if (!password) {
-        toast.error("Password Does not match");
-        return;
-      }
-      await axios.post("http://localhost:5000/auth/signup", [email, password]);
+
+      await axios.post("http://localhost:5000/auth/signup", {
+        email,
+        password,
+      });
+
       toast.success("Account created");
-    } catch (error) {
-      if (error)
-        return toast.error(
-          "Something Wrong Happened at Our Side. Please Try Later"
-        );
+
+      setTimeout(() => {
+        navigate("/");
+        window.location.reload();
+      }, 1500);
+    } catch (err: any) {
+      if (err.response?.data?.code === 23505) {
+        toast.error("Email already Exists Try with different email");
+        return;
+      }
+      if (err.response?.data?.error) {
+        toast.error(err.response.data.error);
+        return;
+      }
+      toast.error("Something Wrong Happened at Our Side. Please Try Later");
     }
   };
   return (
