@@ -1,9 +1,33 @@
-import React from "react";
+import React, { useState, type FormEvent, type ChangeEvent } from "react";
+import axios from "axios";
 import { MdTravelExplore } from "react-icons/md";
 import "./Signin.css";
-
+import { toast } from "react-toastify";
 
 const SignIn: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const registeruser = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      if (!email) {
+        toast.error("Email Does not Match");
+        return;
+      }
+      if (!password) {
+        toast.error("Password Does not match");
+        return;
+      }
+      await axios.post("http://localhost:5000/auth/signup", [email, password]);
+      toast.success("Account created");
+    } catch (error) {
+      if (error)
+        return toast.error(
+          "Something Wrong Happened at Our Side. Please Try Later"
+        );
+    }
+  };
   return (
     <>
       <div
@@ -21,16 +45,22 @@ const SignIn: React.FC = () => {
         </div>
 
         {/* Form */}
-        <form className="p-4 flex flex-col gap-4">
+        <form className="p-4 flex flex-col gap-4" onSubmit={registeruser}>
           <input
             type="email"
             className="rounded-md p-2 placeholder:text-cyan-700 outline-none bg-white/30 text-white"
             placeholder="username@gmail.com"
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
           />
           <input
             type="password"
             className="rounded-md p-2 placeholder:text-cyan-700 outline-none bg-white/30 text-white"
             placeholder="Password"
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
           />
           <input
             type="submit"
