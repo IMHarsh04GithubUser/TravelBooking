@@ -9,7 +9,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 const Hamburger: React.FC = () => {
   const context = useContext(TravelContext);
   if (!context) return null;
-  const { isDark, toggleTheme, isSideBar,toggleSideBar } = context;
+  const { isDark, toggleTheme, isSideBar,toggleSideBar,toggleLogin } = context;
   return (
   <>
     <div
@@ -59,6 +59,7 @@ const Hamburger: React.FC = () => {
       <button
         type="button"
         className="hover:bg-[#667A8A] hover:w-full hover:p-2 hover:rounded-lg"
+        onClick={toggleLogin}
       >
         LogIn
       </button>

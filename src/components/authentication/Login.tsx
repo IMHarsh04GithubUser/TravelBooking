@@ -4,11 +4,17 @@ import { MdTravelExplore } from "react-icons/md";
 import { toast } from "react-toastify";
 import "./Signin.css";
 import { useNavigate } from "react-router-dom";
+import { TravelContext } from "../../context/authcontext";
+import { useContext } from "react";
+import GoogleButton from "react-google-button";
 
 const Login: React.FC = () => {
+  const context = useContext(TravelContext);
+  if (!context) return null;
+  const { toggleDisplay } = context;
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const loginuser = async (e: FormEvent) => {
     e.preventDefault();
     try {
@@ -21,13 +27,14 @@ const Login: React.FC = () => {
         return;
       }
       await axios.post("http://localhost:5000/auth/login", { email, password });
-      toast.success("Account created");
-      navigate('/')
-    } catch (err:any) {
+      toast.success(`Welcome`);
+      setTimeout(() => {
+        navigate("/");
+        window.location.reload();
+      }, 1500);
+    } catch (err: any) {
       if (err.response?.data?.error)
-        return toast.error(
-          err.response?.data?.error
-        );
+        return toast.error(err.response?.data?.error);
     }
   };
   return (
@@ -76,9 +83,18 @@ const Login: React.FC = () => {
 
         {/* Other Options */}
         <p className="text-center text-sm p-2 text-white">Or Continue With</p>
+        <div className="mx-1 my-2">
+          <GoogleButton label="Login with Google" className="" />
+        </div>
         <p className="text-white text-center text-sm">
           Don't have an Account?
-          <span className="text-orange-500 cursor-pointer"> Register Now</span>
+          <span
+            className="text-orange-500 cursor-pointer"
+            onClick={toggleDisplay}
+          >
+            {" "}
+            Register Now
+          </span>
         </p>
       </div>
     </>

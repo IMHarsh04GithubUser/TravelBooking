@@ -32,16 +32,20 @@ export const TravelProvider: React.FC<TravelProviderProps> = ({ children }) => {
   const toggleDisplay = () => {
     setDisplay((prev) => !prev);
     setLogin(true);
+    
   };
 
   const toggleLogin = () => {
     setLogin((prev) => !prev);
     setDisplay(true);
+    setSideBar(false);
   };
 
   const toggleSideBar = () => {
     setSideBar((prev)=>!prev)
     setSideBar((prev)=>prev)
+    
+    
   }
 
   return (
