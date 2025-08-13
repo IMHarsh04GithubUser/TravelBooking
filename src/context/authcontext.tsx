@@ -1,4 +1,12 @@
-import React, { createContext, useState, type ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  type ReactNode,
+  useEffect,
+} from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+axios.defaults.withCredentials = true;
 
 interface TravelContextType {
   isDark: boolean;
@@ -9,7 +17,9 @@ interface TravelContextType {
   toggleLogin: () => void;
   isSideBar: boolean;
   toggleSideBar: () => void;
-  
+  user: string | undefined;
+  handleGoogleLogin: () => void;
+  handleLogout: () => void;
 }
 
 export const TravelContext = createContext<TravelContextType | undefined>(
@@ -24,15 +34,14 @@ export const TravelProvider: React.FC<TravelProviderProps> = ({ children }) => {
   const [isDark, setIsDark] = useState(false);
   const [isDisplay, setDisplay] = useState(true);
   const [isLogin, setLogin] = useState(true);
-  const [isSideBar,setSideBar] = useState(false);
-
+  const [isSideBar, setSideBar] = useState(false);
+  const [user, setUser] = useState<string>();
 
   const toggleTheme = () => setIsDark((prev) => !prev);
 
   const toggleDisplay = () => {
     setDisplay((prev) => !prev);
     setLogin(true);
-    
   };
 
   const toggleLogin = () => {
@@ -42,11 +51,39 @@ export const TravelProvider: React.FC<TravelProviderProps> = ({ children }) => {
   };
 
   const toggleSideBar = () => {
-    setSideBar((prev)=>!prev)
-    setSideBar((prev)=>prev)
-    
-    
-  }
+    setSideBar((prev) => !prev);
+    setSideBar((prev) => prev);
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/auth/user")
+      .then((res) => {
+        setUser(res.data);
+      })
+      .catch((err) => console.log("Error in Loading:" + err));
+  }, []);
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:5000/auth/google"; // Redirect to backend Google login
+    toast.success('Welcome')
+  };
+
+const handleLogout = () => {
+  axios.get("http://localhost:5000/auth/logout", { withCredentials: true })
+    .then(() => {
+      toast.info('Successfully Logout');
+      setTimeout(() => {
+        window.location.href = "/";
+        setUser(undefined)
+      }, 2000); 
+    })
+    .catch(() => {
+      toast.error('Logout Failed');
+    });
+};
+
+
 
   return (
     <TravelContext.Provider
@@ -58,7 +95,10 @@ export const TravelProvider: React.FC<TravelProviderProps> = ({ children }) => {
         isLogin,
         toggleLogin,
         isSideBar,
-        toggleSideBar
+        toggleSideBar,
+        handleGoogleLogin,
+        user,
+        handleLogout,
       }}
     >
       {children}

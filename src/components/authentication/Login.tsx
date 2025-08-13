@@ -11,7 +11,7 @@ import GoogleButton from "react-google-button";
 const Login: React.FC = () => {
   const context = useContext(TravelContext);
   if (!context) return null;
-  const { toggleDisplay } = context;
+  const { toggleDisplay,handleGoogleLogin } = context;
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ const Login: React.FC = () => {
         {/* Other Options */}
         <p className="text-center text-sm p-2 text-white">Or Continue With</p>
         <div className="mx-1 my-2">
-          <GoogleButton label="Login with Google" className="" />
+          <GoogleButton label="Login with Google" className="" onClick={handleGoogleLogin} />
         </div>
         <p className="text-white text-center text-sm">
           Don't have an Account?

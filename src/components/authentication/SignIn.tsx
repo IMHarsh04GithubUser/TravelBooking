@@ -6,12 +6,11 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { TravelContext } from "../../context/authcontext";
 import { useContext } from "react";
-import GoogleButton from "react-google-button";
 
 const SignIn: React.FC = () => {
   const context = useContext(TravelContext);
-    if (!context) return null;
-    const {toggleLogin } = context;
+  if (!context) return null;
+  const { toggleLogin } = context;
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -92,14 +91,15 @@ const SignIn: React.FC = () => {
           />
         </form>
 
-        {/* Other Options */}
-        <p className="text-center text-sm p-2 text-white">Or Continue With</p>
-        <div className="mx-1 my-2">
-          <GoogleButton label="Login with Google" className="" />
-        </div>
         <p className="text-white text-center text-sm">
           Already have an Account?
-          <span className="text-orange-500 cursor-pointer" onClick={toggleLogin}> Login</span>
+          <span
+            className="text-orange-500 cursor-pointer"
+            onClick={toggleLogin}
+          >
+            {" "}
+            Login
+          </span>
         </p>
       </div>
     </>
